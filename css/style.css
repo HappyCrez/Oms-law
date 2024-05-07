@@ -1,0 +1,89 @@
+:root{
+    --main_light_color: #fff;
+    --main_deep_color: #000;
+    --blocks_color: #020e76; 
+
+    --height: 205px;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    background-color: #fff;
+}
+
+button {
+    border: none;
+}
+
+.bg1{
+    background-color: var(--main_light_color);
+}
+
+.bg2{
+    background-color: var(--main_deep_color);
+}
+
+.text-color1{
+    color: var(--main_light_color);
+}
+
+.text-color2{
+    color: var(--main_deep_color);
+}
+
+.header_info {
+    display: flex;
+    margin: 0 15px;
+    align-self: center;
+}
+
+.headerTitle {
+    width: 70%;
+}
+
+.instructionBtn {
+    width: 30%;
+    text-align: right;
+}
+table {
+    table-layout: fixed;
+} 
+
+td {
+    width: auto;
+}
+
+.patron {
+    position: relative;
+    content: none;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    
+    border-radius: 100%;
+    background-color: #000;
+}
+
+.patron_arrow {
+    content: none;
+    width: 3px;
+    height: 40px;
+    
+    background-color: #fff;
+
+    position: absolute;
+    bottom: 48%;
+    left: 48%;
+}
+
+form {
+    justify-content: center;
+}
+
+.input {
+    margin-left: 30px;
+    width: 100px;
+    text-align: right;
+}
