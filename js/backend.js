@@ -80,7 +80,7 @@ function updateVoltmeter(val) {
     voltmeter.innerHTML = val.toFixed(2) + ' В';
 }
 
-function updateLength(val) {
+function updateWireLen(val) {
     length.innerHTML = val + ' м';
 }
 
@@ -113,24 +113,40 @@ function updateResistance(angle, index) {
     calculate();
 }
 
-// Input in bounds 0-99 
-const input = document.getElementById('in');
-input.addEventListener('input', (event)=> {
-    let val = input.value;
-    if (event.data != null && (event.data[0] < '0' || event.data[0] > '9'))
-        input.value = val.substr(0,val.length-1);
-});
-// on focus lost - get value from input
-input.onblur = function() {
-    wire_len = (parseInt(input.value)/100);
-    updateLength(wire_len);
-    calculate();
+// scroll bar - linear to change wire_len
+let track = document.getElementById('track');
+let thumb = document.getElementById('thumb');
+const rightThumbBound = track.offsetWidth - thumb.offsetWidth;
+const linearStep = track.offsetWidth;
+let isClicked = false;
+let clickPointX = 0, clickPointY = 0;
+let dx;
+
+thumb.onmousedown = function (event) {
+    isClicked = true;
+    clickPointX = event.clientX;
+    clickPointY = event.clientY;
 }
 
-document.getElementById('form').onsubmit = function(e) {
-    e.preventDefault();
-    input.blur();
-};
+document.onmousemove = function (event) {
+    if (!isClicked) return;
+    let x = (event.pageX - track.offsetLeft);
+
+    
+    // check bounds 
+    if (x < 0) x = 0;
+    if (x > rightThumbBound) x = rightThumbBound; 
+    wire_len = (x/linearStep).toFixed(2);
+    calculate();
+    
+    thumb.style = 'left: ' + x + "px"; 
+}
+
+document.onmouseup = function(event) {
+    if (!isClicked) return;
+    isClicked = false;
+}
+
 // recalculate volts and ampers on every changed parametr 
 function calculate() {
     let wire_resist = calculateWireResist(wire_len);
@@ -139,5 +155,6 @@ function calculate() {
 
     updateVoltmeter(volts);
     updateAmmeter(ampers);
+    updateWireLen(wire_len);
 }
 calculate();

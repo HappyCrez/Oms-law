@@ -78,12 +78,20 @@ td {
     left: 48%;
 }
 
-form {
-    justify-content: center;
+#track {
+    width: 400px;
+    position: relative;
+    display: block;
+    height: 22px;
+    margin: 20px;
+    border: solid 1px #000;
+    overflow: hidden;
 }
 
-.input {
-    margin-left: 30px;
-    width: 100px;
-    text-align: right;
+#track #thumb {
+    width: 30px;
+    height: 22px;
+    position: absolute;
+    background-color: black;
+    left: 0px;    
 }
