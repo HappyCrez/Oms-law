@@ -40,20 +40,20 @@
                 <ul class="list-group list-group-flush mb-5">
                     <li class="list-group-item">Первая таблица</li>
                     <li class="list-group-item">Необходимо выставить длину проводника - 50см</li>
-                    <li class="list-group-item">1. Выставить сопротивление с помощью магазина сопротивлений, чтобы сила тока стала равна 0.2А</li>
-                    <li class="list-group-item">2. Записать значения в таблицу (таблица дана в методических указаниях)</li>
-                    <li class="list-group-item">3. Уменьшить длину проводника на 5см и повторить действия с пункта 1 (всего 10 измерений)</li>
+                    <li class="list-group-item">1. Выставить сопротивление с помощью магазина сопротивлений, чтобы сила тока стала равна 0.198А</li>
+                    <li class="list-group-item">2. Записать значения силы тока и напряжения в таблицу (таблица дана в методических указаниях)</li>
+                    <li class="list-group-item">3. Каждый раз, уменьшая длину проводника на 5см, повторять действия пунктов 1-3 (всего 10 измерений)</li>
                 </ul>
 
                 <ul class="list-group list-group-flush mb-5">
                     <li class="list-group-item">Вторая таблица</li>
-                    <li class="list-group-item">Необходимо выставить длину проводника в отрезке 40-50см</li>
-                    <li class="list-group-item">1. Изменять значение силы тока в цепи с помощью магазина сопротивлений, соблюдая равномерное уменьшение силы тока</li>
+                    <li class="list-group-item">Необходимо выставить длину проводника в интервале 40-50см</li>
+                    <li class="list-group-item">1. Изменять значение силы тока в цепи с помощью магазина сопротивлений, добавляя по одному ому</li>
                     <li class="list-group-item">2. Записывать значения силы тока и напряжения в таблицу (таблица дана в методических указаниях)</li>
                 </ul>
 
                 <ul class="list-group list-group-flush mb-5">
-                    <li class="list-group-item">Примечания:</li>
+                    <li class="list-group-item">Данные установки:</li>
                     <li class="list-group-item">Вольтметр, класс точности 1.5, предельное значение 1.5В</li>
                     <li class="list-group-item">Амперметр, класс точности 1.5, предельное значение 0.25А</li>
                     <li class="list-group-item">Линейка, систематическая ошибка - 0.5мм</li>
@@ -90,13 +90,11 @@
                                 </button>
                             </td>
                         </tr>
-
                         <tr>
                             <td> x0.25 Ом </td>
                             <td> x0.5  Ом </td>
                             <td> x1    Ом </td>
                         </tr>
-
                         <tr>
                             <td>
                                 <button class="patron" id="patron_3">
@@ -114,7 +112,6 @@
                                 </button>
                             </td>
                         </tr>
-
                         <tr>
                             <td> x5  Ом </td>
                             <td> x10 Ом </td>
@@ -129,9 +126,7 @@
                     <img src="assets/scheme.png" />
                     <div>
                         <h3 class="mt-4">Проводник с подвижным контактом</h3>
-                        <div id="track">
-                            <div id="thumb"></div>
-                        </div>
+                        <canvas id="canvas"><!-- Wire with movement contact --></canvas>
                     </div>
                 </div>
             </div>

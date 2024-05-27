@@ -6,10 +6,17 @@ const ammeter = document.getElementById('ammeter');
 const voltmeter = document.getElementById('voltmeter');
 const length = document.getElementById('length');
 
+// Scroll bar
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const CANVAS_WIDTH = 400
+const CANVAS_HEIGHT = 30
+
 const battery_volts = 1.6, battery_ampers = 0.250, circuit_resistance = 0.1;
 const wire_resistivity = 1.12, wire_S = 0.075;      // both in 10^(-6)
 const wire_resDivedS = wire_resistivity / wire_S;   // it's devide, so extent doesn't matter
-let resistance_val = 0, wire_len = 0;
+let resistance_val = 0, wire_len = 0.03;
 
 const turnBtn = document.getElementById('turnBtn');
 
@@ -39,6 +46,9 @@ function setup() {
         patrons.push(0);
         document.getElementById('patron_' + (i)).addEventListener('click', changeResistance);
     }
+
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
 }
 setup();
 
@@ -113,16 +123,40 @@ function updateResistance(angle, index) {
     calculate();
 }
 
+function updateCanvas() {
+    // clear rectangle
+    ctx.beginPath();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.fill();
+    ctx.closePath();
+    
+    // thumb move
+    ctx.beginPath();
+    ctx.fillStyle = "#000000";
+    for (let i = 5; i <= 100; i += 5)
+        ctx.fillText(i.toString(), i*CANVAS_WIDTH/100, CANVAS_HEIGHT / 2 + 5);
+    ctx.rect(x, 0, THUMB_WIDTH, CANVAS_HEIGHT);
+    ctx.fill();
+
+    // Up and down bounds 
+    ctx.moveTo(0, 0);
+    ctx.lineTo(CANVAS_WIDTH, 0);
+    ctx.moveTo(0, CANVAS_HEIGHT);
+    ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.stroke();
+    ctx.closePath();
+}
+
 // scroll bar - linear to change wire_len
-let track = document.getElementById('track');
-let thumb = document.getElementById('thumb');
-const rightThumbBound = track.offsetWidth - thumb.offsetWidth;
-const linearStep = track.offsetWidth;
+const THUMB_WIDTH = 30;
+const RIGHT_THUMB_BOUND = CANVAS_WIDTH - THUMB_WIDTH;
 let isClicked = false;
 let clickPointX = 0, clickPointY = 0;
 let dx;
+let x = 0;
 
-thumb.onmousedown = function (event) {
+canvas.onmousedown = function (event) {
     isClicked = true;
     clickPointX = event.clientX;
     clickPointY = event.clientY;
@@ -130,16 +164,13 @@ thumb.onmousedown = function (event) {
 
 document.onmousemove = function (event) {
     if (!isClicked) return;
-    let x = (event.pageX - track.offsetLeft);
+    x = (event.pageX - canvas.offsetLeft);
 
-    
     // check bounds 
     if (x < 0) x = 0;
-    if (x > rightThumbBound) x = rightThumbBound; 
-    wire_len = (x/linearStep).toFixed(2);
+    if (x > RIGHT_THUMB_BOUND) x = RIGHT_THUMB_BOUND; 
+    wire_len = (x/CANVAS_WIDTH + 0.03).toFixed(2);
     calculate();
-    
-    thumb.style = 'left: ' + x + "px"; 
 }
 
 document.onmouseup = function(event) {
@@ -156,5 +187,7 @@ function calculate() {
     updateVoltmeter(volts);
     updateAmmeter(ampers);
     updateWireLen(wire_len);
+
+    updateCanvas();
 }
 calculate();
