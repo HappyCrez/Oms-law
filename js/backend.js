@@ -1,10 +1,9 @@
-const angleStep = 360 / 10;
-
-const patrons = [];
-
 const ammeter = document.getElementById('ammeter');
 const voltmeter = document.getElementById('voltmeter');
 const length = document.getElementById('length');
+
+const potentiometr = document.getElementById('potentiometr');
+const potentiometrResistCoef = 0.03125;
 
 // Scroll bar
 const canvas = document.getElementById('canvas');
@@ -16,7 +15,7 @@ const CANVAS_HEIGHT = 30
 const battery_volts = 1.6, battery_ampers = 0.250, circuit_resistance = 0.1;
 const wire_resistivity = 1.12, wire_S = 0.075;      // both in 10^(-6)
 const wire_resDivedS = wire_resistivity / wire_S;   // it's devide, so extent doesn't matter
-let resistance_val = 0, wire_len = 0.03;
+let wire_len = 0.03;
 
 const turnBtn = document.getElementById('turnBtn');
 
@@ -41,45 +40,34 @@ function turnOff() {
     turnBtn.classList.remove('btn-success');
 }
 
+const startPotentiometrAngle = 90; 
+let potentiometrRotation = startPotentiometrAngle;
 function setup() {
-    for (let i = 0; i < 6; i++) {
-        patrons.push(0);
-        document.getElementById('patron_' + (i)).addEventListener('click', changeResistance);
-    }
-
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
+    potentiometr.style.rotate = potentiometrRotation + "deg";
 }
 setup();
 
-function changeResistance(event) {
-    let index = parseInt(this.id.substr(this.id.length - 1));
-    if (event.button == 0)
-        patrons[index] += angleStep;
-    else 
-        patrons[index] -= angleStep
-    
-    if (patrons[index] >= 360 || patrons[index] <= -360) {
-        patrons[index] = 0;
-    }
-    let angle = patrons[index];
-    updateResistance(angle, index);
-
-    this.style.transform = "rotate(" + angle + "deg)";
+function calcuteVolts(ampers, wireResist) {
+    let volts = ampers * wireResist;
+    if (volts > battery_volts) volts = battery_volts;
+    return volts;
 }
 
-function calcuteVolts(ampers, wire_resist) {
-    return ampers * wire_resist;
-}
-
-function calcuteAmpers(resistance, wire_resist) {
-    let ampers = battery_volts / (resistance + wire_resist + circuit_resistance);
+function calcuteAmpers(resistance, wireResist) {
+    let ampers = battery_volts / (resistance + wireResist + circuit_resistance);
     if (ampers > battery_ampers) ampers = battery_ampers; 
     return ampers > 0 ? ampers : 0 ;
 }
 
-function calculateWireResist(wire_len) {
-    return wire_len * wire_resDivedS;
+function calculateWireResist(wireLen) {
+    return wireLen * wire_resDivedS;
+}
+
+function calculatePotentiometrResist(potentiometrRotation) {
+    if (potentiometrRotation < startPotentiometrAngle) return (potentiometrRotation - startPotentiometrAngle + 360) * potentiometrResistCoef;
+    else return (potentiometrRotation - startPotentiometrAngle) * potentiometrResistCoef;
 }
 
 function updateAmmeter(val) {
@@ -92,35 +80,6 @@ function updateVoltmeter(val) {
 
 function updateWireLen(val) {
     length.innerHTML = val + ' м';
-}
-
-function updateResistance(angle, index) {
-    let tick = 1;
-    if (angle == 0) tick = -9;
-    switch(index) {
-    case 0:
-        tick *= 0.25;
-        break;
-    case 1:
-        tick *= 0.5;
-        break;
-    case 2:
-        tick *= 1;
-        break;
-    case 3:
-        tick *= 5;
-        break;
-    case 4:
-        tick *= 10;
-        break;
-    case 5:
-        tick *= 50;
-        break;
-    }
-
-    resistance_val += tick;
-    if (resistance_val < 0) resistance_val = 0;
-    calculate();
 }
 
 function updateCanvas() {
@@ -151,19 +110,25 @@ function updateCanvas() {
 // scroll bar - linear to change wire_len
 const THUMB_WIDTH = 30;
 const RIGHT_THUMB_BOUND = CANVAS_WIDTH - THUMB_WIDTH;
-let isClicked = false;
-let clickPointX = 0, clickPointY = 0;
+let isThumbClicked = false;
+let isPotentiometrClicked = false;
 let dx;
 let x = 0;
 
-canvas.onmousedown = function (event) {
-    isClicked = true;
-    clickPointX = event.clientX;
-    clickPointY = event.clientY;
+function potentiometrProcess(event) {
+    if (!isPotentiometrClicked) return;
+
+
+    let x = (event.pageX - potentiometr.offsetLeft - potentiometr.offsetWidth/2);
+    let y = (event.pageY - potentiometr.offsetTop - potentiometr.offsetHeight/2);
+    
+    potentiometrRotation = startPotentiometrAngle + Math.atan2(x,y)*(-57); 
+    potentiometr.style.rotate = potentiometrRotation + "deg";
+    calculate();
 }
 
-document.onmousemove = function (event) {
-    if (!isClicked) return;
+function thumbProcess(event) {
+    if (!isThumbClicked) return;
     x = (event.pageX - canvas.offsetLeft);
 
     // check bounds 
@@ -173,16 +138,31 @@ document.onmousemove = function (event) {
     calculate();
 }
 
+canvas.onmousedown = function (event) {
+    isThumbClicked = true;
+}
+
+document.getElementById('potentiometrField').onmousedown = function (event) {
+    isPotentiometrClicked = true;
+}
+
+document.onmousemove = function (event) {
+    potentiometrProcess(event);
+    thumbProcess(event);
+}
+
 document.onmouseup = function(event) {
-    if (!isClicked) return;
-    isClicked = false;
+    isPotentiometrClicked = false;
+    isThumbClicked = false;
 }
 
 // recalculate volts and ampers on every changed parametr 
 function calculate() {
-    let wire_resist = calculateWireResist(wire_len);
-    let ampers = isTurnOn ? calcuteAmpers(resistance_val, wire_resist) : 0;
-    let volts  = isTurnOn ? calcuteVolts(ampers, wire_resist) : 0;
+    let wireResist = calculateWireResist(wire_len);
+    let resistanceVal = calculatePotentiometrResist(potentiometrRotation);
+    console.log(potentiometrRotation + " " + resistanceVal);
+    let ampers = isTurnOn ? calcuteAmpers(resistanceVal, wireResist) : 0;
+    let volts  = isTurnOn ? calcuteVolts(ampers, wireResist) : 0;
 
     updateVoltmeter(volts);
     updateAmmeter(ampers);

@@ -35,6 +35,7 @@
                 <ul class="list-group list-group-flush mb-5">
                     <li class="list-group-item">В таблице указаны значения показателей приборов: Амперметра, Вольтметра и длина проводника.</b></li>
                     <li class="list-group-item">Для выставления длины проводника, необходимо зажать левой кнопкой мыши по черному прямоугольнику под надписью "Проводник с подвижным контактом", а затем потянуть мышку влевую (для уменьшения длины проводящей зоны) или вправую (для увеличения длины проводящей зоны) сторону. Значение длины при каждом изменении будет обновляться в таблице</li>
+                    <li class="list-group-item">Для управления потенциометром необходимо зажать левую кнопку мыши вокруг него (или на нём самом), а затем потянуть вращательным движением, по часовой стрелке для увеличения сопротивления, против часовой для уменьшения. При прохождении полного оборота сопротивление начинает отсчёт с нуля!</li>
                     <li class="list-group-item">Для начала работы, установку необходимо включить (нажать на зеленую кнопку под схемой)</li>
                 </ul>
                 <ul class="list-group list-group-flush mb-5">
@@ -48,7 +49,7 @@
                 <ul class="list-group list-group-flush mb-5">
                     <li class="list-group-item">Вторая таблица</li>
                     <li class="list-group-item">Необходимо выставить длину проводника в интервале 40-50см</li>
-                    <li class="list-group-item">1. Изменять значение силы тока в цепи с помощью магазина сопротивлений, добавляя по одному ому</li>
+                    <li class="list-group-item">1. Изменять значение силы тока в цепи с помощью потенциометра, соблюдая равномерное увеличение</li>
                     <li class="list-group-item">2. Записывать значения силы тока и напряжения в таблицу (таблица дана в методических указаниях)</li>
                 </ul>
 
@@ -68,56 +69,17 @@
         <div class="container">
             <div class="row mt-4 mb-5">
 
-                <div class="col-lg-6 col-12 ps-lg-5">
+                <div id="potentiometrField" class="col-lg-6 col-12 ps-lg-5">
 
-                    <h3>Магазин сопротивлений (R<sub>1</sub>)</h3>
+                    <h3>Потенциометр (R<sub>1</sub>)</h3>
                     
-                    <table class="table table-hover text-center mt-4">
-                        <tr>
-                            <td>
-                                <button class="patron" id="patron_0">
-                                    <div class="patron_arrow"></div>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="patron" id="patron_1">
-                                    <div class="patron_arrow"></div>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="patron" id="patron_2">
-                                    <div class="patron_arrow"></div>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> x0.25 Ом </td>
-                            <td> x0.5  Ом </td>
-                            <td> x1    Ом </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <button class="patron" id="patron_3">
-                                    <div class="patron_arrow"></div>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="patron" id="patron_4">
-                                    <div class="patron_arrow"></div>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="patron" id="patron_5">
-                                    <div class="patron_arrow"></div>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> x5  Ом </td>
-                            <td> x10 Ом </td>
-                            <td> x50 Ом </td>
-                        </tr>
-                    </table>
+                    <div class="text-center">
+                        <div>5.625 Ом </div>
+                        <div id="potentiometr">
+                            <div id="line"></div>
+                        </div>
+                        <div class="">0</div>
+                    </div>
                 </div>
                 <div class="col-lg-6 col-12 ps-lg-5">
 
